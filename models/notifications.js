@@ -1,5 +1,4 @@
-var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/notifications', { useNewUrlParser: true });
+var mongoose = require('./db');
 
 var NotificationSchema = new mongoose.Schema({
     subject: {
@@ -10,8 +9,7 @@ var NotificationSchema = new mongoose.Schema({
       type: {},
       validate: {
         validator: function(v) {
-          try { JSON.parse(`${v}`); } catch (e) { return false; }
-          return true;
+          return typeof v === 'object' ? true : false
         },
         message: props => 'Body is not a valid json data!'
       },
