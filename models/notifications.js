@@ -1,33 +1,42 @@
-var mongoose = require('./db');
+const mongoose = require('./db');
+const fs = require('fs');
+let templates = [];
 
-var NotificationSchema = new mongoose.Schema({
+const NotificationSchema = new mongoose.Schema({
     subject: {
-      type: String,
-      required: [true, 'Subject is required']
+        type: String,
+        required: [true, 'Subject is required']
     },
     body: {
-      type: {},
-      validate: {
-        validator: function(v) {
-          return typeof v === 'object' ? true : false
+        type: {},
+        validate: {
+            validator: function(v) {
+                return typeof v === 'object'
+            },
+            message: props => 'Body is not a valid json data!'
         },
-        message: props => 'Body is not a valid json data!'
-      },
-      required: [true, 'Body is required']
+        required: [true, 'Body is required']
     },
     recipient: {
-      type: String,
-      validate: {
-        validator: function(v) {
-          return (/^[0-9a-z-\.]+\@[0-9a-z-]{2,}\.[a-z]{2,}$/i).test(v);
+        type: String,
+        validate: {
+            validator: function(v) {
+                return (/^[0-9a-z-\.]+\@[0-9a-z-]{2,}\.[a-z]{2,}$/i).test(v);
+            },
+            message: props => `${props.value} is not a email!`
         },
-        message: props => `${props.value} is not a email!`
-      },
-      required: [true, 'Recipient is required']
+        required: [true, 'Recipient is required']
     },
     template: {
-      type: String,
-      required: [true, 'Template is required']
+        type: String,
+        validate: {
+            validator: function(v) {
+                templates = fs.readdirSync('templates/').map(file => { return `${file.split('.')[0]}`; });
+                return templates.includes(`${v}`);
+            },
+            message: props => `${props.value} is an unknown template`
+        },
+        required: [true, 'Template is required']
     },
 }, {timestamps: true});
 
