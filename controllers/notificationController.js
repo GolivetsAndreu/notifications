@@ -33,7 +33,6 @@ exports.findById = async(req, res) => {
 exports.updateById = async(req, res) => {
     try {
         ErrorService.checkRequest(req.body);
-        await Notification.find({ "_id": req.body.id });
         await Notification.updateOne({ "_id": req.body.id }, req.body.params, { runValidators: true });
         res.end();
     } catch (err) {

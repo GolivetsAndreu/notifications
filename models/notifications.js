@@ -40,11 +40,11 @@ const NotificationSchema = new mongoose.Schema({
     },
 }, {timestamps: true});
 
-NotificationSchema.post('save', function(next) {
+NotificationSchema.post('save', function() {
     this.body = JSON.stringify(this.body);
 });
 
-NotificationSchema.post('updateOne', function(next) {
+NotificationSchema.post('updateOne', function() {
     this._update.body = JSON.stringify(this._update.body);
 });
 
