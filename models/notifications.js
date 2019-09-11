@@ -11,7 +11,7 @@ const NotificationSchema = new mongoose.Schema({
         type: {},
         validate: {
             validator: function(v) {
-                return typeof v === 'object'
+                return typeof v === 'object';
             },
             message: props => 'Body is not a valid json data!'
         },
@@ -39,5 +39,13 @@ const NotificationSchema = new mongoose.Schema({
         required: [true, 'Template is required']
     },
 }, {timestamps: true});
+
+NotificationSchema.post('save', function(next) {
+    this.body = JSON.stringify(this.body);
+});
+
+NotificationSchema.post('updateOne', function(next) {
+    this._update.body = JSON.stringify(this._update.body);
+});
 
 module.exports = mongoose.model('notifications', NotificationSchema);
