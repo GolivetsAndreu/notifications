@@ -1,3 +1,5 @@
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/notifications', { useNewUrlParser: true });
+require('dotenv').config();
+mongoose.connect(process.env.DB_URL, { useNewUrlParser: true });
+
 module.exports = mongoose;

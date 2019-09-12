@@ -1,13 +1,13 @@
 const Notification = require('../models/notifications');
 const ErrorService = require('../services/error');
-const nodeMailer = require('nodemailer');
-const ejs = require('ejs');
-const MailConfig = require('../config/mail');
+const EmailService = require('../services/emails');
 
 exports.new = async(req, res) => {
     try {
         ErrorService.checkRequest(req.body);
-        await Notification.create(req.body);
+        const notification = await Notification.create(req.body);
+        await EmailService.sendMail(notification);
+        await markNotification(notification);
         res.status(200).end();
     } catch(err) {
         res.status(422).send(ErrorService.setError(err));
@@ -53,41 +53,6 @@ exports.deleteById = async(req, res) => {
     }
 };
 
-exports.sendMails = async(req, res) => {
-    try {
-        let created_at = 0;
-        let body = '';
-        await Notification.find({ isSend: false }).then(function(notifications) {
-            notifications.forEach(async(notification) => {
-                let template = ejs.renderFile(`./templates/${notification.template}.ejs`, notification.body);
-                await template.then(function (result) { body = JSON.stringify(result) });
-                await sendMail(notification.recipient, notification.subject, body);
-            });
-            created_at = notifications[notifications.length - 1].createdAt;
-        });
-
-        if(created_at !== 0) { await markNotifications(created_at); }
-
-        res.end();
-    }  catch (err) {
-        res.status(403).send(ErrorService.setError(err));
-    }
-};
-
-async function markNotifications (created_at) {
-    try {
-        Notification.find({}).where('createdAt').lte(created_at).updateMany({}, { isSend: true });
-    } catch (err) {
-        throw err;
-    }
-}
-
-async function sendMail(to, subject, body) {
-    const transporter = nodeMailer.createTransport(MailConfig);
-    const mailOptions = { to: to, subject: subject, html: body };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) throw error;
-        console.log('Message %s sent: %s', info.messageId, info.response);
-    });
+async function markNotification (notification) {
+    await Notification.updateOne({ _id: notification._id }, { isSend: true });
 }
