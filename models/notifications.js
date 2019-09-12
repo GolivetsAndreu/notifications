@@ -31,13 +31,17 @@ const NotificationSchema = new mongoose.Schema({
         type: String,
         validate: {
             validator: function(v) {
-                templates = fs.readdirSync('templates/').map(file => { return `${file.split('.')[0]}`; });
-                return templates.includes(`${v}`);
+                templates = fs.readdirSync('templates/').map(file => { return file.split('.')[0]; });
+                return templates.includes(v);
             },
             message: props => `${props.value} is an unknown template`
         },
         required: [true, 'Template is required']
     },
+    isSend: {
+        type: Boolean,
+        default: false
+    }
 }, {timestamps: true});
 
 NotificationSchema.post('save', function() {

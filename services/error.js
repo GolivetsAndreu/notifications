@@ -9,7 +9,7 @@ exports.setError = function(err) {
             errors = { "errors": { "id": { "message": "Wrong id!" } } };
         }
     } else {
-        errors = { "errors": { "request": { "message": err } } };
+        errors = { "errors": { "request": { "message": err.message || err } } };
     }
     return errors;
 };
