@@ -14,8 +14,10 @@ exports.setError = function(err) {
     return errors;
 };
 
-exports.checkRequest = function(args) {
-    if (Object.keys(args).length === 0) {
+exports.checkRequest = function(args, userCheck = false) {
+    if (userCheck && Object.keys(args).length < 2) {
+        throw "Email or password can't be blank";
+    } else if (Object.keys(args).length === 0) {
         throw "Request params can't be blank";
     }
 };
