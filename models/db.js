@@ -1,3 +1,4 @@
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/notifications', { useNewUrlParser: true });
+mongoose.connect(AppConfig.dbUrl, { useNewUrlParser: true });
+
 module.exports = mongoose;

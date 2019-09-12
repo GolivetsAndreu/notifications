@@ -1,34 +1,58 @@
 const Notification = require('../models/notifications');
+const ErrorService = require('../services/error');
+const EmailService = require('../services/emails');
 
-exports.new = function(req, res) {
-  Notification.create(req.body, function (errors, notification) {
-      notification ? res.status(200).end() : res.status(422).send(errors)
-  });
+exports.new = async(req, res) => {
+    try {
+        ErrorService.checkRequest(req.body);
+        const notification = await Notification.create(req.body);
+        await EmailService.sendMail(notification);
+        await markNotification(notification);
+        res.status(200).end();
+    } catch(err) {
+        res.status(422).send(ErrorService.setError(err));
+    }
 };
 
-exports.get = function(req, res) {
-    Notification.find(req.body, function(err, result) {
-        if (err) throw err;
-        res.json(result);
-    });
+exports.get = async(req, res) => {
+    try {
+        const notifications = await Notification.find({});
+        res.json(notifications);
+    } catch(err) {
+        res.status(403).send(ErrorService.setError(err));
+    }
 };
 
-exports.findById = function(req, res) {
-    Notification.find({ "_id": `${req.query.id}` }, function(err, result) {
-        if (err) throw err;
-        res.json(result);
-    });
+exports.findById = async(req, res) => {
+    try {
+        ErrorService.checkRequest(req.query);
+        const notification = await Notification.find({ _id: req.query.id });
+        res.json(notification);
+    } catch (err) {
+        res.status(422).send(ErrorService.setError(err));
+    }
 };
 
-exports.updateById = function(req, res) {
-    Notification.find({ "_id": `${req.body.id}` }).update(req.body.params, function(err, info) {
-        if (err) throw err;
-    });
-    res.redirect(`/notification?id=${req.body.id}`);
+exports.updateById = async(req, res) => {
+    try {
+        ErrorService.checkRequest(req.body);
+        await Notification.updateOne({ _id: req.body.id }, req.body.params, { runValidators: true });
+        res.end();
+    } catch (err) {
+        res.status(422).send(ErrorService.setError(err));
+    }
 };
 
-exports.deleteById = function(req, res) {
-    Notification.find({ "_id": `${req.body.id}` }).remove().exec();
-    res.end('deleted');
+exports.deleteById = async(req, res) => {
+    try {
+        ErrorService.checkRequest(req.body);
+        await Notification.deleteOne({ _id: req.body.id });
+        res.end('deleted');
+    } catch (err) {
+        res.status(422).send(ErrorService.setError(err));
+    }
 };
 
+async function markNotification (notification) {
+    await Notification.updateOne({ _id: notification._id }, { isSend: true });
+}
