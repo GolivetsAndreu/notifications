@@ -1,4 +1,5 @@
-const indexConfig = {
+require('dotenv').config();
+global.AppConfig = {
     "mailHost": process.env.MAIL_HOST,
     "mailPort": process.env.MAIL_PORT,
     "mailUser": process.env.MAIL_USER,
@@ -6,5 +7,3 @@ const indexConfig = {
     "port": process.env.PORT,
     "dbUrl": process.env.DB_URL,
 };
-
-module.exports = indexConfig;

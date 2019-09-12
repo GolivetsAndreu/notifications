@@ -1,5 +1,4 @@
-require('dotenv').config();
-global.AppConfig = require('./config/index');
+require('./config/index');
 const express = require('express');
 const bodyParser = require('body-parser');
 const routes = require('./routes/index');
