@@ -1,10 +1,10 @@
 const transporter = {
-    host: 'smtp.gmail.com',
-    port: 465,
+    host: AppConfig.mailHost,
+    port: AppConfig.mailPort,
     secure: true,
     auth: {
-        user: 'jdleonardi.test@gmail.com',
-        pass: 'testgmail1!'
+        user: AppConfig.mailUser,
+        pass: AppConfig.mailPass
     }
 };
 

@@ -1,17 +1,8 @@
 const nodeMailer = require('nodemailer');
 const ejs = require('ejs');
-require('dotenv').config();
+const mailConfig = require('../config/mail');
 
 exports.sendMail = async (notification) => {
-    const mailConfig = {
-        host: process.env.MAIL_HOST,
-        port: process.env.MAIL_PORT,
-        secure: true,
-        auth: {
-            user: process.env.MAIL_USER,
-            pass: process.env.MAIL_PASS
-        }
-    };
     const transporter = nodeMailer.createTransport(mailConfig);
 
     transporter.sendMail(await mailOptions(notification), (err, info) => {
