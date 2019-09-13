@@ -11,9 +11,4 @@ app.use('/', routes);
 
 app.listen(AppConfig.port);
 
-function stop() {
-    app.close();
-}
-
 module.exports = app;
-module.exports.stop = stop;

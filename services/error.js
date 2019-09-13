@@ -19,9 +19,16 @@ exports.setError = function(err) {
  * @param {boolean} userCheck
  */
 exports.checkRequest = function(args, userCheck = false) {
-    if (args === undefined || (userCheck && !Object.keys(args).includes('password') && !Object.keys(args).includes('email'))) {
+    if(args === undefined) args = {};
+    if (userCheck && !Object.keys(args).includes('password') && !Object.keys(args).includes('email')) {
         throw "Email or password can't be blank";
     } else if (Object.keys(args).length === 0) {
         throw "Request params can't be blank";
+    }
+};
+
+exports.checkRequestOnId = function (args) {
+    if(!Object.keys(args).includes('id')) {
+        throw "Id can't be blank";
     }
 };

@@ -10,3 +10,10 @@ global.AppConfig = {
     "secret": process.env.SECRET,
     "strategy": process.env.STRATEGY
 };
+
+global.User = {
+    "user": {
+        "email": "test@gmail.com",
+        "password": "test"
+    }
+};
