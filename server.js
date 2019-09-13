@@ -10,3 +10,5 @@ app.use(bodyParser.json());
 app.use('/', routes);
 
 app.listen(AppConfig.port);
+
+module.exports = app;

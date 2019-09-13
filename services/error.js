@@ -1,3 +1,7 @@
+/** complete error
+ * @param {object} err or {string} err
+ * @returns {object} error
+ */
 exports.setError = function(err) {
     let errors = {};
     if (err.name === 'ValidationError') {
@@ -5,15 +9,15 @@ exports.setError = function(err) {
             errors = { "errors": { [key]: { "message": err.errors[key].message } } };
         });
     } else if(err.name === 'CastError') {
-        if (err.path === '_id') {
-            errors = { "errors": { "id": { "message": "Wrong id!" } } };
-        }
-    } else {
-        errors = { "errors": { "request": { "message": err.message || err } } };
-    }
+        if (err.path === '_id') errors = { "errors": { "id": { "message": "Wrong id!" } } };
+    } else errors = { "errors": { "request": { "message": err.message || err } } };
     return errors;
 };
 
+/** check request for including params
+ * @param {object} args - Express request body or query object
+ * @param {boolean} userCheck
+ */
 exports.checkRequest = function(args, userCheck = false) {
     if (userCheck && Object.keys(args).length < 2) {
         throw "Email or password can't be blank";

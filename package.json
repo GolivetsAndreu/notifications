@@ -4,7 +4,9 @@
   "private": true,
   "main": "server",
   "scripts": {
-    "start": "nodejs ./bin/www"
+    "start": "nodejs ./bin/www",
+    "test": "cross-env NODE_ENV=test jest --testTimeout=10000",
+    "drop-db": "echo db.dropDatabase() | mongo testing"
   },
   "dependencies": {
     "aws-sdk": "^2.526.0",
@@ -19,6 +21,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.3.2",
     "mongoose": "^5.7.0",
+    "mongoose-unique-validator": "^2.0.3",
     "morgan": "^1.9.1",
     "nodemailer": "^6.3.0",
     "passport": "^0.4.0",
@@ -26,7 +29,10 @@
     "static-favicon": "~1.0.0"
   },
   "devDependencies": {
-    "nodemon": "^1.19.2"
+    "cross-env": "^5.2.1",
+    "jest": "^24.9.0",
+    "nodemon": "^1.19.2",
+    "supertest": "^4.0.2"
   },
   "repository": {
     "type": "git",
@@ -39,5 +45,11 @@
     "url": "https://github.com/GolivetsAndreu/notifications/issues"
   },
   "homepage": "https://github.com/GolivetsAndreu/notifications#readme",
-  "description": ""
+  "description": "",
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
+  }
 }

@@ -8,7 +8,7 @@ const NotificationSchema = new mongoose.Schema({
         required: [true, 'Subject is required']
     },
     body: {
-        type: String,
+        type: {},
         validate: {
             validator: function(v) {
                 return typeof v === 'object';
