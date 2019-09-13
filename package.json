@@ -5,8 +5,7 @@
   "main": "server",
   "scripts": {
     "start": "nodejs ./bin/www",
-    "test": "cross-env NODE_ENV=test jest --testTimeout=10000",
-    "drop-db": "echo db.dropDatabase() | mongo testing"
+    "test": "cross-env NODE_ENV=test jest --testTimeout=10000"
   },
   "dependencies": {
     "aws-sdk": "^2.526.0",

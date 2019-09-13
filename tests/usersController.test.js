@@ -1,19 +1,123 @@
 const request = require('supertest');
 const app = require('../server.js');
-const Notification = require('../models/notifications.js');
+const User = require('../models/users.js');
+
+const user = {
+    "user": {
+        "email": "test@gmail.com",
+        "password": "test"
+    }
+};
+
+const userWithWrongEmail = {
+    "user": {
+        "email": "test",
+        "password": "test"
+    }
+};
+
+const userWithWrongPass = {
+    "user": {
+        "email": "test@gmail.com",
+        "password": "wrong password"
+    }
+};
+
+let token = '';
 
 describe('Users registration', () => {
-    it('should create a new user', async () => {
-        const res = await request(app)
-            .post('/users/create')
-            .send({
-                "user": {
-                    "email": "test@gmail.com",
-                    "password": "test"
-                }
-            });
+    it('drop', async () => {
+        await User.deleteMany({});
+    });
+
+    it('Can`t registration user without params', async () => {
+        const res = await request(app).post('/users/create');
+        const error = { "errors": { "request": { "message": "Email or password can't be blank" } } };
+
+        expect(res.statusCode).toEqual(422);
+        expect(res.body).toStrictEqual(error);
+    });
+
+    it('Can`t registration with not an email', async () => {
+        const res = await request(app).post('/users/create').send(userWithWrongEmail);
+        const error = { "errors": { "email": { "message": "test is not a email!" } } };
+
+        expect(res.statusCode).toEqual(422);
+        expect(res.body).toStrictEqual(error);
+    });
+
+    it('Should registration a new user', async () => {
+        const res = await request(app).post('/users/create').send(user);
 
         expect(res.statusCode).toEqual(200);
-        expect(res.body).toHaveProperty('post');
-    })
+        expect(res.body.user).toHaveProperty('email');
+        expect(res.body.user).toHaveProperty('token');
+    });
+
+    it('Can`t registration with the same email', async () => {
+        const res = await request(app).post('/users/create').send(user);
+        const error = { "errors": { "email": { "message": "Error, expected `email` to be unique. Value: `test@gmail.com`" } } };
+
+        expect(res.statusCode).toEqual(422);
+        expect(res.body).toStrictEqual(error);
+    });
+});
+
+afterAll(() => setTimeout(() => app.stop(), 1000));
+
+describe('User login', () => {
+    it('Should login user', async () => {
+        const res = await request(app).post('/users/login').send(user);
+
+        expect(res.statusCode).toEqual(200);
+        expect(res.body.user).toHaveProperty('token');
+        expect(res.body.user).toHaveProperty('email');
+        token = res.body.user.token;
+    });
+
+    it('Can`t login user without params', async () => {
+        const res = await request(app).post('/users/login');
+        const error = { "errors": { "request": { "message": "Email or password can't be blank" } } };
+
+        expect(res.statusCode).toEqual(422);
+        expect(res.body).toStrictEqual(error);
+    });
+
+    it('Can`t login user with wrong email', async () => {
+        const res = await request(app).post('/users/login').send(userWithWrongEmail);
+        const error = { "errors": { "email or password": "is invalid" } };
+
+        expect(res.statusCode).toEqual(400);
+        expect(res.body).toStrictEqual(error);
+    });
+
+    it('Can`t login user with wrong password', async () => {
+        const res = await request(app).post('/users/login').send(userWithWrongPass);
+        const error = { "errors": { "email or password": "is invalid" } };
+
+        expect(res.statusCode).toEqual(400);
+        expect(res.body).toStrictEqual(error);
+    });
+});
+
+describe('Get current user', () => {
+    it('Should get current user', async () => {
+        const res = await request(app).get('/users/current').set('Authorization', `Token ${token}`);
+
+        expect(res.statusCode).toEqual(200);
+        expect(res.body.user).toHaveProperty('email');
+        expect(res.body.user).toHaveProperty('token');
+    });
+
+    it('Can`t get current user with wrong token', async () => {
+        const res = await request(app).get('/users/current').set('Authorization', `Token test.wrong.token`);
+
+        expect(res.statusCode).toEqual(401);
+    });
+
+    it('Can`t get current user without token', async () => {
+        const res = await request(app).get('/users/current');
+
+        expect(res.statusCode).toEqual(401);
+    });
 });
