@@ -1,15 +1,7 @@
-require('dotenv').config();
+const indexConfig = require('./index');
+indexConfig["dbUrl"] = process.env.TEST_DB_URL;
 
-global.AppConfig = {
-    "mailHost": process.env.MAIL_HOST,
-    "mailPort": process.env.MAIL_PORT,
-    "mailUser": process.env.MAIL_USER,
-    "mailPass": process.env.MAIL_PASS,
-    "port": process.env.PORT,
-    "dbUrl": process.env.TEST_DB_URL,
-    "secret": process.env.SECRET,
-    "strategy": process.env.STRATEGY
-};
+global.AppConfig = indexConfig;
 
 global.User = {
     "user": {

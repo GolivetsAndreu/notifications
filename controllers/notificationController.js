@@ -1,6 +1,6 @@
 const Notification = require('../models/notifications');
 const ErrorService = require('../services/error');
-const EmailService = require('../services/emails');
+const sesClient = require('../services/ses-client');
 
 /** create notification
  * @param {object} req - Express request object
@@ -11,7 +11,7 @@ exports.new = async(req, res) => {
     try {
         ErrorService.checkRequest(req.body);
         const notification = await Notification.create(req.body);
-        await EmailService.sendMail(notification);
+        await sesClient.sendEmail(notification);
         await markNotification(notification);
         res.status(200).end();
     } catch(err) {

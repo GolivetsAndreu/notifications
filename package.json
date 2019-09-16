@@ -8,7 +8,7 @@
     "test": "cross-env NODE_ENV=test jest --testTimeout=10000"
   },
   "dependencies": {
-    "aws-sdk": "^2.526.0",
+    "aws-sdk": "^2.528.0",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.4",
     "debug": "^4.1.1",
@@ -44,11 +44,14 @@
     "url": "https://github.com/GolivetsAndreu/notifications/issues"
   },
   "homepage": "https://github.com/GolivetsAndreu/notifications#readme",
-  "description": "",
   "jest": {
     "testEnvironment": "node",
     "coveragePathIgnorePatterns": [
       "/node_modules/"
     ]
-  }
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "description": ""
 }
