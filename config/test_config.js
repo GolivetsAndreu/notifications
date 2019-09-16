@@ -6,7 +6,14 @@ global.AppConfig = {
     "mailUser": process.env.MAIL_USER,
     "mailPass": process.env.MAIL_PASS,
     "port": process.env.PORT,
-    "dbUrl": process.env.DB_URL,
+    "dbUrl": process.env.TEST_DB_URL,
     "secret": process.env.SECRET,
     "strategy": process.env.STRATEGY
+};
+
+global.User = {
+    "user": {
+        "email": "test@gmail.com",
+        "password": "test"
+    }
 };

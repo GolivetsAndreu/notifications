@@ -2,6 +2,11 @@ const Notification = require('../models/notifications');
 const ErrorService = require('../services/error');
 const EmailService = require('../services/emails');
 
+/** create notification
+ * @param {object} req - Express request object
+ * @param {object} res - Express response object
+ * @returns success status if success, {object} error if failed
+ */
 exports.new = async(req, res) => {
     try {
         ErrorService.checkRequest(req.body);
@@ -14,6 +19,12 @@ exports.new = async(req, res) => {
     }
 };
 
+/** get all notification
+ * @param {object} req - Express request object
+ * @param {object} res - Express response object
+ * @returns {array} of {object} notifications if success,
+ * {object} error if failed
+ */
 exports.get = async(req, res) => {
     try {
         const notifications = await Notification.find({});
@@ -23,6 +34,11 @@ exports.get = async(req, res) => {
     }
 };
 
+/** find notification by id
+ * @param {object} req - Express request object
+ * @param {object} res - Express response object
+ * @returns {object} notification if success, {object} error if failed
+ */
 exports.findById = async(req, res) => {
     try {
         ErrorService.checkRequest(req.query);
@@ -33,9 +49,15 @@ exports.findById = async(req, res) => {
     }
 };
 
+/** update notification by id
+ * @param {object} req - Express request object
+ * @param {object} res - Express response object
+ * @returns success status if success, {object} error if failed
+ */
 exports.updateById = async(req, res) => {
     try {
-        ErrorService.checkRequest(req.body);
+        ErrorService.checkRequestOnId(req.body);
+        ErrorService.checkRequest(req.body.params);
         await Notification.updateOne({ _id: req.body.id }, req.body.params, { runValidators: true });
         res.end();
     } catch (err) {
@@ -43,6 +65,11 @@ exports.updateById = async(req, res) => {
     }
 };
 
+/** delete notification by id
+ * @param {object} req - Express request object
+ * @param {object} res - Express response object
+ * @returns success status and {string} info - 'deleted' if success, {object} error if failed
+ */
 exports.deleteById = async(req, res) => {
     try {
         ErrorService.checkRequest(req.body);
@@ -53,6 +80,7 @@ exports.deleteById = async(req, res) => {
     }
 };
 
-async function markNotification (notification) {
-    await Notification.updateOne({ _id: notification._id }, { isSend: true });
-}
+/** mark notification that it sended after success sending email
+ * @param {object} notification - MongoDB object
+ */
+const markNotification = (notification) => Notification.updateOne({ _id: notification._id }, { isSend: true });
