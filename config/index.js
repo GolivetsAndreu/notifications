@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const indexConfig = {
+global.AppConfig = {
     "mailHost": process.env.MAIL_HOST,
     "mailPort": process.env.MAIL_PORT,
     "mailUser": process.env.MAIL_USER,
@@ -12,6 +12,8 @@ const indexConfig = {
     "awsSecret": process.env.AWS_SECRET,
     "awsFrom": process.env.AWS_FROM_DEFAULT,
     "awsRegion": process.env.AWS_REGION,
+    "dbName": process.env.DB_NAME,
+    "dbHost": process.env.DB_HOST,
+    "dbUserName": process.env.DB_USER_NAME,
+    "dbUserPass": process.env.DB_USER_PASS,
 };
-
-module.exports = indexConfig;
