@@ -26,7 +26,7 @@ module.exports = (request, app) => {
 
         it('Can`t registration with not an email', async () => {
             const res = await request(app).post('/users/create').send(userWithWrongEmail);
-            const error = { "errors": { "email": { "message": "test is not a email!" } } };
+            const error = { "errors": { "email": { "message": "Your email is not valid email address" } } };
 
             expect(res.statusCode).toEqual(422);
             expect(res.body).toStrictEqual(error);
@@ -42,7 +42,7 @@ module.exports = (request, app) => {
 
         it('Can`t registration with the same email', async () => {
             const res = await request(app).post('/users/create').send(User);
-            const error = { "errors": { "email": { "message": "Error, expected `email` to be unique. Value: `test@gmail.com`" } } };
+            const error = { "errors": { "email": { "message": "Error, expected email to be unique. Value: test@gmail.com" } } };
 
             expect(res.statusCode).toEqual(422);
             expect(res.body).toStrictEqual(error);

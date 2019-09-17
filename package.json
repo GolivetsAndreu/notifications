@@ -5,7 +5,10 @@
   "main": "server",
   "scripts": {
     "start": "nodejs ./bin/www",
-    "test": "cross-env NODE_ENV=test jest --testTimeout=10000"
+    "migrate": "npx sequelize-cli db:migrate",
+    "migrate:reset": "npx sequelize-cli db:migrate:undo:all && npm run migrate",
+    "test": "cross-env NODE_ENV=test jest --testTimeout=10000",
+    "pretest": "cross-env NODE_ENV=test npm run migrate:reset"
   },
   "dependencies": {
     "aws-sdk": "^2.528.0",
@@ -25,6 +28,10 @@
     "nodemailer": "^6.3.0",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
+    "pg": "^7.12.1",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^5.18.4",
+    "sequelize-isunique-validator": "^1.1.1",
     "static-favicon": "~1.0.0"
   },
   "devDependencies": {

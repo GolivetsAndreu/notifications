@@ -1,5 +1,5 @@
 const passport = require('passport');
-const Users = require('../models/users');
+const User = require('../models').User;
 const ErrorService = require('../services/error');
 
 /** registration user
@@ -13,7 +13,7 @@ exports.registration = async (req, res) => {
         const { body: { user } } = req;
         ErrorService.checkRequest(user, true);
 
-        const newUser = await new Users(user);
+        const newUser = await new User(user);
         await newUser.setPassword(user.password);
         await newUser.save();
 
@@ -49,8 +49,8 @@ exports.login = async(req, res) => {
  * {object} error if failed
  */
 exports.getCurrent = async(req, res) => {
-    const { payload: { id } } = req;
-    const user = await Users.findById(id);
+    const { payload: { email } } = req;
+    const user = await User.findOne({ where: { email: email } });
 
     return user ? res.json({ user: user.toAuthJSON() }) : res.sendStatus(400)
 };

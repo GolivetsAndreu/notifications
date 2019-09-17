@@ -1,6 +1,6 @@
-const Notification = require('../models/notifications');
 const ErrorService = require('../services/error');
 const sesClient = require('../services/ses-client');
+const Notification = require('../models').Notification;
 
 /** create notification
  * @param {object} req - Express request object
@@ -27,7 +27,7 @@ exports.new = async(req, res) => {
  */
 exports.get = async(req, res) => {
     try {
-        const notifications = await Notification.find({});
+        const notifications = await Notification.findAll();
         res.json(notifications);
     } catch(err) {
         res.status(403).send(ErrorService.setError(err));
@@ -42,7 +42,7 @@ exports.get = async(req, res) => {
 exports.findById = async(req, res) => {
     try {
         ErrorService.checkRequest(req.query);
-        const notification = await Notification.find({ _id: req.query.id });
+        const notification = await Notification.findOne({ where: { id: req.query.id } });
         res.json(notification);
     } catch (err) {
         res.status(422).send(ErrorService.setError(err));
@@ -58,7 +58,7 @@ exports.updateById = async(req, res) => {
     try {
         ErrorService.checkRequestOnId(req.body);
         ErrorService.checkRequest(req.body.params);
-        await Notification.updateOne({ _id: req.body.id }, req.body.params, { runValidators: true });
+        await Notification.update(req.body.params, { where: { id: req.body.id } });
         res.end();
     } catch (err) {
         res.status(422).send(ErrorService.setError(err));
@@ -73,7 +73,7 @@ exports.updateById = async(req, res) => {
 exports.deleteById = async(req, res) => {
     try {
         ErrorService.checkRequest(req.body);
-        await Notification.deleteOne({ _id: req.body.id });
+        await Notification.destroy({ where: { id: req.body.id } });
         res.end('deleted');
     } catch (err) {
         res.status(422).send(ErrorService.setError(err));
@@ -83,4 +83,4 @@ exports.deleteById = async(req, res) => {
 /** mark notification that it sended after success sending email
  * @param {object} notification - MongoDB object
  */
-const markNotification = (notification) => Notification.updateOne({ _id: notification._id }, { isSend: true });
+const markNotification = (notification) => Notification.update({ isSend: true }, { where: { id: notification.id } });

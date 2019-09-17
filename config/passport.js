@@ -1,6 +1,6 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
-const Users = require('../models/users');
+const User = require('../models').User;
 const jwt = require('express-jwt');
 
 /** check params for login user
@@ -10,7 +10,7 @@ passport.use(new LocalStrategy({
     usernameField: 'user[email]',
     passwordField: 'user[password]',
 }, async(email, password, done) => {
-    const user = await Users.findOne({ email });
+    const user = await User.findOne({ where: { email: email } });
     if(!user || !user.validatePassword(password)) {
         return done(null, false, { errors: { 'email or password': 'is invalid' } });
     } else {

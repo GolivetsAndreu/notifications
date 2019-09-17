@@ -119,7 +119,7 @@ module.exports = (request, app) => {
 
         it('Can`t create notification with wrong recipient', async () => {
             const res = await request(app).post('/notification/create').set('Authorization', `Token ${token}`).send(notWitWrongRecipient);
-            const error = { "errors": { "recipient": { "message": "test is not a email!" } } };
+            const error = { "errors": { "recipient": { "message": "Your email is not valid email address" } } };
 
             expect(res.statusCode).toEqual(422);
             expect(res.body).toStrictEqual(error);
@@ -160,10 +160,10 @@ module.exports = (request, app) => {
 
     describe('Get notification', () => {
         it('Get notification by id', async () => {
-            const res = await request(app).get('/notification/').set('Authorization', `Token ${token}`).query({ id: newNotification._id });
+            const res = await request(app).get('/notification/').set('Authorization', `Token ${token}`).query({ id: newNotification.id });
 
             expect(res.statusCode).toEqual(200);
-            expect(res.body[0]).toStrictEqual(newNotification);
+            expect(res.body).toStrictEqual(newNotification);
         });
 
         it('Can`t get notification without id', async () => {
@@ -183,7 +183,7 @@ module.exports = (request, app) => {
         });
 
         it('Can`t get notification without token', async () => {
-            const res = await request(app).get('/notification/').query({ id: newNotification._id });
+            const res = await request(app).get('/notification/').query({ id: newNotification.id });
 
             expect(res.statusCode).toEqual(401);
         });
@@ -198,7 +198,7 @@ module.exports = (request, app) => {
         });
 
         it('Can`t get notifications without token', async () => {
-            const res = await request(app).get('/notification/all').query({ id: newNotification._id });
+            const res = await request(app).get('/notification/all').query({ id: newNotification.id });
 
             expect(res.statusCode).toEqual(401);
         });
@@ -206,16 +206,16 @@ module.exports = (request, app) => {
 
     describe('Update notification by id', () => {
         it('update notification', async () => {
-            const res = await request(app).put('/notification/update').set('Authorization', `Token ${token}`).send({ id: newNotification._id, params: paramsForUpdate });
+            const res = await request(app).put('/notification/update').set('Authorization', `Token ${token}`).send({ id: newNotification.id, params: paramsForUpdate });
 
             expect(res.statusCode).toEqual(200);
         });
 
         it('Check notification on update', async () => {
-            const res = await request(app).get('/notification/').set('Authorization', `Token ${token}`).query({ id: newNotification._id });
+            const res = await request(app).get('/notification/').set('Authorization', `Token ${token}`).query({ id: newNotification.id });
 
             expect(res.statusCode).toEqual(200);
-            expect(res.body[0]).toHaveProperty('subject', 'test-updated');
+            expect(res.body).toHaveProperty('subject', 'test-updated');
         });
 
         it('Can`t update without id', async () => {
@@ -235,7 +235,7 @@ module.exports = (request, app) => {
         });
 
         it('Can`t update without params', async () => {
-            const res = await request(app).put('/notification/update').set('Authorization', `Token ${token}`).send({ id: newNotification._id });
+            const res = await request(app).put('/notification/update').set('Authorization', `Token ${token}`).send({ id: newNotification.id });
             const error = { "errors": { "request": { "message": "Request params can't be blank" } } };
 
             expect(res.statusCode).toEqual(422);
@@ -243,7 +243,7 @@ module.exports = (request, app) => {
         });
 
         it('Can`t update without token', async () => {
-            const res = await request(app).put('/notification/update').send({ id: newNotification._id, params: paramsForUpdate });
+            const res = await request(app).put('/notification/update').send({ id: newNotification.id, params: paramsForUpdate });
 
             expect(res.statusCode).toEqual(401);
         });
@@ -267,13 +267,13 @@ module.exports = (request, app) => {
         });
 
         it('Can`t delete without token', async () => {
-            const res = await request(app).delete('/notification/delete').send({ id: newNotification._id });
+            const res = await request(app).delete('/notification/delete').send({ id: newNotification.id });
 
             expect(res.statusCode).toEqual(401);
         });
 
         it('Should delete notification', async () => {
-            const res = await request(app).delete('/notification/delete').set('Authorization', `Token ${token}`).send({ id: newNotification._id });
+            const res = await request(app).delete('/notification/delete').set('Authorization', `Token ${token}`).send({ id: newNotification.id });
 
             expect(res.statusCode).toEqual(200);
         });
