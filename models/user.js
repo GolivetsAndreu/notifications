@@ -1,7 +1,6 @@
 'use strict';
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const User = require('./index').User;
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {

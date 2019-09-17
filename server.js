@@ -1,4 +1,4 @@
-require(`./config/${process.env.NODE_ENV === 'test' ? 'test_config' : 'index'}`);
+require(`./config`);
 require('./config/passport');
 const express = require('express');
 const bodyParser = require('body-parser');
