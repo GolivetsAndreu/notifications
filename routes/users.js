@@ -1,9 +1,9 @@
-var express = require('express');
-var router = express.Router();
+const router = require('express').Router();
+const auth = require('../config/passport');
+const UserController = require('../controllers/usersController');
 
-/* GET users listing. */
-router.get('/', function(req, res) {
-  res.send('respond with a resource');
-});
+router.post('/create', auth.optional, UserController.registration);
+router.post('/login', auth.optional, UserController.login);
+router.get('/current', auth.required, UserController.getCurrent);
 
 module.exports = router;

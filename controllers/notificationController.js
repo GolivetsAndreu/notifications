@@ -1,34 +1,94 @@
-const Notification = require('../models/notifications');
+const ErrorService = require('../services/error');
+const sesClient = require('../services/ses-client');
+const Notification = require('../models').Notification;
 
-exports.new = function(req, res) {
-  Notification.create(req.body, function (errors, notification) {
-      notification ? res.status(200).end() : res.status(422).send(errors)
-  });
+/** create notification
+ * @param {object} req - Express request object
+ * @param {object} res - Express response object
+ * @returns success status if success, {object} error if failed
+ */
+exports.new = async(req, res) => {
+    try {
+        ErrorService.checkRequest(req.body);
+        const notification = await Notification.create(req.body);
+        await sesClient.sendEmail(notification);
+        await markNotification(notification);
+        res.status(200).end();
+    } catch(err) {
+        Logger.log({ level: 'error', message: err });
+        res.status(422).send(ErrorService.setError(err));
+    }
 };
 
-exports.get = function(req, res) {
-    Notification.find(req.body, function(err, result) {
-        if (err) throw err;
-        res.json(result);
-    });
+/** get all notification
+ * @param {object} req - Express request object
+ * @param {object} res - Express response object
+ * @returns {array} of {object} notifications if success,
+ * {object} error if failed
+ */
+exports.get = async(req, res) => {
+    try {
+        const pageSize = 10;
+        const page = req.query.page || 1;
+        const offset = (page - 1)  * pageSize;
+        const notifications = await Notification.findAll({ limit: pageSize, offset, where: {}, order: [['id', 'ASC']] });
+        res.json(notifications);
+    } catch(err) {
+        Logger.log({ level: 'error', message: err });
+        res.status(403).send(ErrorService.setError(err));
+    }
 };
 
-exports.findById = function(req, res) {
-    Notification.find({ "_id": `${req.query.id}` }, function(err, result) {
-        if (err) throw err;
-        res.json(result);
-    });
+/** find notification by id
+ * @param {object} req - Express request object
+ * @param {object} res - Express response object
+ * @returns {object} notification if success, {object} error if failed
+ */
+exports.findById = async(req, res) => {
+    try {
+        ErrorService.checkRequest(req.query);
+        const notification = await Notification.findOne({ where: { id: req.query.id } });
+        res.json(notification);
+    } catch (err) {
+        Logger.log({ level: 'error', message: err });
+        res.status(422).send(ErrorService.setError(err));
+    }
 };
 
-exports.updateById = function(req, res) {
-    Notification.find({ "_id": `${req.body.id}` }).update(req.body.params, function(err, info) {
-        if (err) throw err;
-    });
-    res.redirect(`/notification?id=${req.body.id}`);
+/** update notification by id
+ * @param {object} req - Express request object
+ * @param {object} res - Express response object
+ * @returns success status if success, {object} error if failed
+ */
+exports.updateById = async(req, res) => {
+    try {
+        ErrorService.checkRequestOnId(req.body);
+        ErrorService.checkRequest(req.body.params);
+        await Notification.update(req.body.params, { where: { id: req.body.id } });
+        res.end();
+    } catch (err) {
+        Logger.log({ level: 'error', message: err });
+        res.status(422).send(ErrorService.setError(err));
+    }
 };
 
-exports.deleteById = function(req, res) {
-    Notification.find({ "_id": `${req.body.id}` }).remove().exec();
-    res.end('deleted');
+/** delete notification by id
+ * @param {object} req - Express request object
+ * @param {object} res - Express response object
+ * @returns success status and {string} info - 'deleted' if success, {object} error if failed
+ */
+exports.deleteById = async(req, res) => {
+    try {
+        ErrorService.checkRequest(req.body);
+        await Notification.destroy({ where: { id: req.body.id } });
+        res.end('deleted');
+    } catch (err) {
+        Logger.log({ level: 'error', message: err });
+        res.status(422).send(ErrorService.setError(err));
+    }
 };
 
+/** mark notification that it sended after success sending email
+ * @param {object} notification - MongoDB object
+ */
+const markNotification = (notification) => Notification.update({ isSend: true }, { where: { id: notification.id } });
