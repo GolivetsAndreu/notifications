@@ -1,5 +1,6 @@
 require(`./config`);
 require('./config/passport');
+global.Logger = require('./services/logger');
 const express = require('express');
 const bodyParser = require('body-parser');
 const routes = require('./routes');

@@ -18,3 +18,10 @@ module.exports = {
         "dialect": "postgres"
     }
 };
+
+global.User = {
+    "user": {
+        "email": "test@gmail.com",
+        "password": "test"
+    }
+};

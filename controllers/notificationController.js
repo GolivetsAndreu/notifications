@@ -15,6 +15,7 @@ exports.new = async(req, res) => {
         await markNotification(notification);
         res.status(200).end();
     } catch(err) {
+        Logger.log({ level: 'error', message: err });
         res.status(422).send(ErrorService.setError(err));
     }
 };
@@ -27,9 +28,13 @@ exports.new = async(req, res) => {
  */
 exports.get = async(req, res) => {
     try {
-        const notifications = await Notification.findAll();
+        const pageSize = 10;
+        const page = req.query.page || 1;
+        const offset = (page - 1)  * pageSize;
+        const notifications = await Notification.findAll({ limit: pageSize, offset, where: {}, order: [['id', 'ASC']] });
         res.json(notifications);
     } catch(err) {
+        Logger.log({ level: 'error', message: err });
         res.status(403).send(ErrorService.setError(err));
     }
 };
@@ -45,6 +50,7 @@ exports.findById = async(req, res) => {
         const notification = await Notification.findOne({ where: { id: req.query.id } });
         res.json(notification);
     } catch (err) {
+        Logger.log({ level: 'error', message: err });
         res.status(422).send(ErrorService.setError(err));
     }
 };
@@ -61,6 +67,7 @@ exports.updateById = async(req, res) => {
         await Notification.update(req.body.params, { where: { id: req.body.id } });
         res.end();
     } catch (err) {
+        Logger.log({ level: 'error', message: err });
         res.status(422).send(ErrorService.setError(err));
     }
 };
@@ -76,6 +83,7 @@ exports.deleteById = async(req, res) => {
         await Notification.destroy({ where: { id: req.body.id } });
         res.end('deleted');
     } catch (err) {
+        Logger.log({ level: 'error', message: err });
         res.status(422).send(ErrorService.setError(err));
     }
 };

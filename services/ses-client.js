@@ -42,7 +42,7 @@ const sendEmail = async (notification, from) => {
     };
 
     ses.sendEmail(params, (err, data) => {
-        return err ? console.log(err, err.stack) : console.log("Email sent.", data)
+        return err ? Logger.log({ level: 'error', message: err }) : console.log("Email sent.", data)
     });
 };
 

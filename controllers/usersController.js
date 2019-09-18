@@ -19,6 +19,7 @@ exports.registration = async (req, res) => {
 
         res.json({ user: await newUser.toAuthJSON() });
     } catch (err) {
+        Logger.log({ level: 'error', message: err });
         res.status(422).send(ErrorService.setError(err));
     }
 };
@@ -37,6 +38,7 @@ exports.login = async(req, res) => {
             (err, passportUser, info) => sendPassportUser(err, passportUser, info, res)
         )(req, res);
     } catch (err) {
+        Logger.log({ level: 'error', message: err });
         res.status(422).send(ErrorService.setError(err));
     }
 };
@@ -49,10 +51,14 @@ exports.login = async(req, res) => {
  * {object} error if failed
  */
 exports.getCurrent = async(req, res) => {
-    const { payload: { email } } = req;
-    const user = await User.findOne({ where: { email: email } });
-
-    return user ? res.json({ user: user.toAuthJSON() }) : res.sendStatus(400)
+    try {
+        const { payload: { email } } = req;
+        const user = await User.findOne({ where: { email: email } });
+        res.json({ user: user.toAuthJSON() });
+    } catch (err) {
+        Logger.log({ level: 'error', message: err });
+        res.sendStatus(400);
+    }
 };
 
 /** send user after success login
@@ -62,11 +68,12 @@ exports.getCurrent = async(req, res) => {
  * @param {object} res - Express response object
  */
 function sendPassportUser(err, passportUser, info, res) {
-    if (err) { throw err; }
+    if (err) { Logger.log({ level: 'error', message: err }); }
     else if (passportUser) {
         passportUser.token = passportUser.generateJWT();
         res.json({ user: passportUser.toAuthJSON() });
     } else if (info) {
+        Logger.log({ level: 'info', message: info });
         res.status(400).send(info);
     }
 }
