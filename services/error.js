@@ -8,8 +8,12 @@ exports.setError = function(err) {
         Object.keys(err.errors).forEach(function(key) {
             errors = { "errors": { [key]: { "message": err.errors[key].message } } };
         });
-    } else if(err.name === 'CastError') {
-        if (err.path === '_id') errors = { "errors": { "id": { "message": "Wrong id!" } } };
+    } else if (err.name === 'SequelizeValidationError') {
+        Object.keys(err.errors).forEach(function(key) {
+            errors = { "errors": { [err.errors[key].path]: { "message": err.errors[key].message } } };
+        });
+    } else if(err.name === 'SequelizeDatabaseError') {
+        if (err.message.includes('invalid input syntax for integer:')) errors = { "errors": { "id": { "message": "Wrong id!" } } };
     } else errors = { "errors": { "request": { "message": err.message || err } } };
     return errors;
 };

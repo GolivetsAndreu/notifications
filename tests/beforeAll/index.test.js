@@ -1,9 +1,9 @@
-const User = require('../../models/users.js');
-const Notification = require('../../models/notifications.js');
+const User = require('../../models').User;
+const Notification = require('../../models').Notification;
 
 describe('drop tables', () => {
     it('drop', async () => {
-        await Notification.deleteMany({});
-        await User.deleteMany({});
+        await Notification.destroy({where: {}});
+        await User.destroy({where: {}});
     });
 });

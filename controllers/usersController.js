@@ -1,5 +1,5 @@
 const passport = require('passport');
-const Users = require('../models/users');
+const User = require('../models').User;
 const ErrorService = require('../services/error');
 
 /** registration user
@@ -13,12 +13,13 @@ exports.registration = async (req, res) => {
         const { body: { user } } = req;
         ErrorService.checkRequest(user, true);
 
-        const newUser = await new Users(user);
+        const newUser = await new User(user);
         await newUser.setPassword(user.password);
         await newUser.save();
 
         res.json({ user: await newUser.toAuthJSON() });
     } catch (err) {
+        Logger.log({ level: 'error', message: err });
         res.status(422).send(ErrorService.setError(err));
     }
 };
@@ -37,6 +38,7 @@ exports.login = async(req, res) => {
             (err, passportUser, info) => sendPassportUser(err, passportUser, info, res)
         )(req, res);
     } catch (err) {
+        Logger.log({ level: 'error', message: err });
         res.status(422).send(ErrorService.setError(err));
     }
 };
@@ -49,10 +51,14 @@ exports.login = async(req, res) => {
  * {object} error if failed
  */
 exports.getCurrent = async(req, res) => {
-    const { payload: { id } } = req;
-    const user = await Users.findById(id);
-
-    return user ? res.json({ user: user.toAuthJSON() }) : res.sendStatus(400)
+    try {
+        const { payload: { email } } = req;
+        const user = await User.findOne({ where: { email: email } });
+        res.json({ user: user.toAuthJSON() });
+    } catch (err) {
+        Logger.log({ level: 'error', message: err });
+        res.sendStatus(400);
+    }
 };
 
 /** send user after success login
@@ -62,11 +68,12 @@ exports.getCurrent = async(req, res) => {
  * @param {object} res - Express response object
  */
 function sendPassportUser(err, passportUser, info, res) {
-    if (err) { throw err; }
+    if (err) { Logger.log({ level: 'error', message: err }); }
     else if (passportUser) {
         passportUser.token = passportUser.generateJWT();
         res.json({ user: passportUser.toAuthJSON() });
     } else if (info) {
+        Logger.log({ level: 'info', message: info });
         res.status(400).send(info);
     }
 }
