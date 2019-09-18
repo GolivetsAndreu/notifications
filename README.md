@@ -18,7 +18,7 @@ The second step, you must create user for postgresql
     
     `postgres=# ALTER ROLE me CREATEDB;`
     
-    C``reate database for project
+    Create database for project
     
     `postgres=> CREATE DATABASE <your name for database>;`
     
