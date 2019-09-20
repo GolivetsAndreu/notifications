@@ -13,6 +13,6 @@ i18n.configure({
 module.exports = function(req, res, next) {
     i18n.init(req, res);
     res.locals.__ = i18n.__;
-    var current_locale = i18n.getLocale();
+    const current_locale = i18n.getLocale();
     return next();
 };
