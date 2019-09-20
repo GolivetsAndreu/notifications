@@ -1,0 +1,15 @@
+{
+	"hello_world": "Hello world!",
+	"errors": {
+        "subject": "Subject is required",
+        "body": "Body is required",
+        "wrongBody": "Body is not a valid json data!",
+        "recipient": "Recipient is required",
+        "wrongRecipient": "Your email is not valid email address",
+        "template": "Template is required",
+        "emailAndPasswordCantBeBlank": "Email or password can't be blank",
+        "requestCantBeBlank": "Request params can't be blank",
+        "idCantBeBlank": "Id can't be blank",
+        "wrongId": "Wrong id!"
+    }
+}

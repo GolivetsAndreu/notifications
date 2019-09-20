@@ -16,7 +16,7 @@ exports.new = async(req, res) => {
         res.status(200).end();
     } catch(err) {
         Logger.log({ level: 'error', message: err });
-        res.status(422).send(ErrorService.setError(err));
+        res.status(422).send(ErrorService.setError(err, res));
     }
 };
 
@@ -35,7 +35,7 @@ exports.get = async(req, res) => {
         res.json(notifications);
     } catch(err) {
         Logger.log({ level: 'error', message: err });
-        res.status(403).send(ErrorService.setError(err));
+        res.status(403).send(ErrorService.setError(err, res));
     }
 };
 
@@ -51,7 +51,7 @@ exports.findById = async(req, res) => {
         res.json(notification);
     } catch (err) {
         Logger.log({ level: 'error', message: err });
-        res.status(422).send(ErrorService.setError(err));
+        res.status(422).send(ErrorService.setError(err, res));
     }
 };
 
@@ -68,7 +68,7 @@ exports.updateById = async(req, res) => {
         res.end();
     } catch (err) {
         Logger.log({ level: 'error', message: err });
-        res.status(422).send(ErrorService.setError(err));
+        res.status(422).send(ErrorService.setError(err, res));
     }
 };
 
@@ -84,7 +84,7 @@ exports.deleteById = async(req, res) => {
         res.end('deleted');
     } catch (err) {
         Logger.log({ level: 'error', message: err });
-        res.status(422).send(ErrorService.setError(err));
+        res.status(422).send(ErrorService.setError(err, res));
     }
 };
 

@@ -9,10 +9,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
             notNull: {
-                msg: "Subject is required"
+                msg: "errors.subject"
             },
             notEmpty: {
-                msg: "Subject is required"
+                msg: "errors.subject"
             },
         }
     },
@@ -21,13 +21,13 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
             notEmpty: {
-                msg: "Body is required"
+                msg: "errors.body"
             },
             notNull: {
-                msg: "Body is required"
+                msg: "errors.body"
             },
             isObject: (value) => {
-                if (typeof value !== 'object') throw 'Body is not a valid json data!';
+                if (typeof value !== 'object') throw "errors.wrongBody";
             }
         }
     },
@@ -36,13 +36,13 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
             notEmpty: {
-                msg: "Recipient is required"
+                msg: "errors.recipient"
             },
             notNull: {
-                msg: "Recipient is required"
+                msg: "errors.recipient"
             },
             isEmail: {
-                msg: "Your email is not valid email address"
+                msg: "errors.wrongRecipient"
             }
         }
     },
@@ -51,10 +51,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
             notEmpty: {
-                msg: "Template is required"
+                msg: "errors.template"
             },
             notNull: {
-                msg: "Template is required"
+                msg: "errors.template"
             },
             haveTemplate: (value) => {
                 templates = fs.readdirSync('templates/').map(file => { return file.split('.')[0]; });

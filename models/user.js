@@ -8,11 +8,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         validate: {
             isEmail: {
-                msg: "Your email is not valid email address"
+                msg: "errors.wrongRecipient"
             },
             isUnique: async (value) => {
                 const result = await User.findOne({ where: { email: value } });
-                if (result) throw `Error, expected email to be unique. Value: ${value}`;
+                if (result) throw `Error, expected email to be unique, ${value} is already used`;
             }
         },
         unique: true
