@@ -20,7 +20,7 @@ exports.registration = async (req, res) => {
         res.json({ user: await newUser.toAuthJSON() });
     } catch (err) {
         Logger.log({ level: 'error', message: err });
-        res.status(422).send(ErrorService.setError(err));
+        res.status(422).send(ErrorService.setError(err, res));
     }
 };
 
@@ -39,7 +39,7 @@ exports.login = async(req, res) => {
         )(req, res);
     } catch (err) {
         Logger.log({ level: 'error', message: err });
-        res.status(422).send(ErrorService.setError(err));
+        res.status(422).send(ErrorService.setError(err, res));
     }
 };
 
