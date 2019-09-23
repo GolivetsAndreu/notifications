@@ -1,0 +1,262 @@
+{
+  "info": {
+    "title": "Node Swagger API",
+    "version": "1.0.0",
+    "description": "Demonstrating how to describe a RESTful API with Swagger"
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "swagger": "2.0",
+  "securityDefinitions": { },
+  "paths": {
+    "/notification/create":{
+      "post": {
+        "tags": [
+          "Notifications"
+        ],
+        "parameters": [{
+          "name": "Authorization",
+          "type": "string",
+          "in": "header",
+          "required": true
+        }, {
+          "name": "body",
+          "in": "body",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "subject": {
+                "type": "string"
+              },
+              "recipient": {
+                "type": "string"
+              },
+              "template": {
+                "type": "string"
+              },
+              "body": {
+                "type": "object"
+              }
+            }
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "Success request"
+          },
+          "422": {
+            "description": "Failed validations"
+          }
+        }
+      }
+    },
+    "/notification/all":{
+      "get": {
+        "tags": [
+          "Notifications"
+        ],
+        "parameters": [{
+          "name": "Authorization",
+          "type": "string",
+          "in": "header",
+          "required": true
+        }, {
+          "name": "page",
+          "type": "integer",
+          "in": "query"
+        }],
+        "responses": {
+          "200": {
+            "description": "Success request"
+          },
+          "422": {
+            "description": "Failed validations"
+          }
+        }
+      }
+    },
+    "/notification":{
+      "get": {
+        "tags": [
+          "Notifications"
+        ],
+        "parameters": [{
+          "name": "Authorization",
+          "type": "string",
+          "in": "header",
+          "required": true
+        }, {
+          "name": "id",
+          "type": "integer",
+          "in": "query",
+          "required": true
+        }],
+        "responses": {
+          "200": {
+            "description": "Success request"
+          },
+          "422": {
+            "description": "Failed request"
+          }
+        }
+      }
+    },
+    "/notification/update":{
+      "put": {
+        "tags": [
+          "Notifications"
+        ],
+        "parameters": [{
+          "name": "Authorization",
+          "type": "string",
+          "in": "header",
+          "required": true
+        }, {
+          "name": "body",
+          "in": "body",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "params": {
+                "type": "object"
+              }
+            }
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "Notification is updated"
+          },
+          "422": {
+            "description": "Failed request"
+          }
+        }
+      }
+    },
+    "/notification/delete":{
+      "delete": {
+        "tags": [
+          "Notifications"
+        ],
+        "parameters": [{
+          "name": "Authorization",
+          "type": "string",
+          "in": "header",
+          "required": true
+        }, {
+          "name": "id",
+          "type": "integer",
+          "in": "formData",
+          "required": true
+        }],
+        "responses": {
+          "200": {
+            "description": "Notification is updated"
+          },
+          "422": {
+            "description": "Failed request"
+          }
+        }
+      }
+    },
+    "/users/create":{
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "parameters": [{
+          "name": "body",
+          "in": "body",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "user": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "Notification is updated"
+          },
+          "422": {
+            "description": "Failed request"
+          }
+        }
+      }
+    },
+    "/users/login":{
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "parameters": [{
+          "name": "body",
+          "in": "body",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "user": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "Notification is updated"
+          },
+          "422": {
+            "description": "Failed request"
+          }
+        }
+      }
+    },
+    "/users/current":{
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "parameters": [{
+          "name": "Authorization",
+          "type": "string",
+          "in": "header",
+          "required": true
+        }],
+        "responses": {
+          "200": {
+            "description": "Notification is updated"
+          },
+          "422": {
+            "description": "Failed request"
+          }
+        }
+      }
+    }
+  },
+  "definitions": { },
+  "responses": { }
+}

@@ -13,7 +13,7 @@ exports.setError = function(err, res) {
             errors = { "errors": { [err.errors[key].path]: { "message": res.__(`${err.errors[key].message}`) } } };
         });
     } else if(err.name === 'SequelizeDatabaseError') {
-        if (err.message.includes('invalid input syntax for integer:')) errors = { "errors": { "id": { "message": "errors.wrongId" } } };
+        if (err.message.includes('invalid input syntax for integer:')) errors = { "errors": { "id": { "message": res.__("errors.wrongId") } } };
     } else errors = { "errors": { "request": { "message": res.__(`${err.message || err}`) } } };
     return errors;
 };
