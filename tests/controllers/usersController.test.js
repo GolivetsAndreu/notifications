@@ -42,7 +42,7 @@ module.exports = (request, app) => {
 
         it('Can`t registration with the same email', async () => {
             const res = await request(app).post('/users/create').send(User);
-            const error = { "errors": { "email": { "message": "Error, expected email to be unique. Value: test@gmail.com" } } };
+            const error = { "errors": { "email": { "message": "Error, expected email to be unique, test@gmail.com is already used" } } };
 
             expect(res.statusCode).toEqual(422);
             expect(res.body).toStrictEqual(error);
